@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+		<meta charset="utf-8">
+		<title>ENDG 319 - Finding Sample Mean</title>
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script type="text/javascript" id="MathJax-script" async
+			src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+		</script>
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+</head>
+
+ 
+<body>
+ <center>
+ <form>
+   	
+	<br>		
+	<p style="color:blue"> <b>MEAN, VARIANCE AND STANDARD DEVIATION OF A SAMPLE </b> </p>
+	<br>
+	Sample size, n (an integer): <input type"text" id="size">
+	<br>
+	<br>
+	<button type="button" onclick="generateTable()">Create Table</button>
+	<br>
+	<div id = "table"></div>
+	<br>
+	<button type="button" onclick="calc1()">Find Mean </button>
+    <br>
+	The mean of the sample, \(\bar{X} \) =
+	<div id="result0"></div>
+	<br>
+	<div id = "meanFormula" style ="display: none;">
+	<button type="button" id ="meanShow" style="display: block;">Show Work</button>
+		<div id ="meanContent">
+			<br>
+			<div id="formula0"></div>
+			<br>
+			<button type="button" id="meanHide">Hide Work</button>
+		</div>
+	</div>
+	<br>
+	<button type="button" onclick="calc2()">Find  Variance and standard deviation</button>
+    <br>
+		The variance of the sample, \(s^{2}\) = <br>
+		<div id="result1"></div>
+		<br>
+		The standard deviation of the sample, \(s\) = <br>
+		<div id="result2"></div>
+		<br>
+		<div id = "varFormula" style ="display: none;">
+			<button type="button" id="varShow" style="display: block;">Show Work</button>
+			<div id = "varianceContent">
+				<div id="formula1"></div>
+				<button type="button" id="varHide">Hide Work</button>
+			</div>	
+		</div>
+		<br>
+		<button type="button" id="DivShow">Show Think, Pair, Share Activity</button>
+		<br>
+		<div id="myDIV" style="display:none">
+			<p>
+			<br>
+			<p  style="color:green","font-size:120%"> <b> THINK, PAIR, SHARE </b> </p>
+			<hr>
+			<p style="font-size:120%">
+			(1) Find the mean and standard deviation of the lengths (in cm to nearest whole number) of three cylinders: <span style="color:blue">3</span>, <span style="color:blue">3</span>, <span style="color:blue">3</span>.<br>
+			(2) Careful measruement (in cm) to one decimal place shows that the numeircal values are actually <span style="color:blue">2.9</span>, <span style="color:blue">3.0</span>, and <span style="color:blue">3.1</span> <br> Do the mean and standard deviaiton increase, decrease or remain the same?<br></p>
+			<br>
+			<button type="button" id="DivHide">Hide Think, Pair, Share Activity</button>
+			<br>	
+		</div>
+				
+</form>
+
+</center>
+</body>
+
+<script>
+function calc1(){
+		var n = parseFloat(document.querySelector("#size").value)
+		let formulaButton = document.getElementById("meanFormula")
+		formulaButton.style.display = "none";	
+		var xvalue = [];
+		for(let i = 1; i <= n; i++){
+			xvalue[i-1] = parseFloat(document.querySelector(`#valuex${i}`).value);
+		}
+
+		//Find Mean	of x-values
+		var xmean;		var xmean1;
+		var xsum = 0;
+				for (var k = 0; k < n; k++)
+				{
+				xsum = xsum + parseFloat(xvalue[k]);
+				}
+		xmean = xsum/n;
+		xmean1=parseFloat(xmean.toFixed(3));
+
+
+		//Output
+
+		document.querySelector("#result0").innerHTML = xmean1;
+		
+		if(!isNaN(xmean)){
+			formulaButton.style.display = "block";
+			meanCalcWork(xvalue);
+		}
+		document.getElementById("meanContent").style.display= "none";
+		
+}
+
+//
+function calc2(){
+		var n = parseFloat(document.querySelector("#size").value)
+		let formulaButton = document.getElementById("varFormula");	
+		var xvalue = [];
+		for(let i = 1; i <= n; i++){
+			xvalue[i-1] = parseFloat(document.querySelector(`#valuex${i}`).value);
+		}
+
+		//Find Mean	of x-values
+		var xmean;		var xmean1;
+		var xsum = 0;
+				for (var k = 0; k < n; k++)
+				{
+				xsum = xsum + parseFloat(xvalue[k]);
+				}
+		xmean = xsum/n;
+		xmean1=parseFloat(xmean.toFixed(3));
+
+		//Find Variance of x-values
+		var variance = 0;
+
+		for (let i = 0; i < n; i++){
+			variance += Math.pow(xvalue[i] - xmean, 2);
+		}
+		if (n <= 1) {
+			variance = NaN;
+		}
+		else{
+			variance = variance/(n-1);
+		}
+		if(!isNaN(variance)){;
+			formulaButton.style.display = "block";
+			varCalcWork(xvalue, xmean, xmean1);
+		}
+		else{
+			formulaButton.style.display = "none";
+		}	
+				
+				stdev=Math.sqrt(variance);
+				stdev1=parseFloat(stdev.toFixed(3));
+		document.getElementById("varianceContent").style.display= "none";
+		//Output
+					
+		document.querySelector("#result1").innerHTML = variance.toFixed(3);
+		document.querySelector("#result2").innerHTML = stdev1;
+		
+}
+
+//work to calculate the mean
+function meanCalcWork(xvalue){
+	let html = "$$\\bar{X}=\\frac{1}{n} \\sum_{i=1}^{n}X_{i}$$";
+	let num = ""
+	let sum = 0
+	for(let i =0; i < xvalue.length; i++){
+		num += `${xvalue[i]}`;
+		if( i !== xvalue.length -1){
+			num += "+"
+			if( i === 2 && i <xvalue.length - 1){
+				num += "...+";
+				i = xvalue.length -2;
+			}
+		}
+		
+	}
+	for(let i=0; i < xvalue.length; i++){
+		sum += xvalue[i];
+	}
+	let denom = `${xvalue.length}`;
+	html += `$$=\\frac{${num}}{${denom}}$$`;
+	if(xvalue.length > 1){
+		html += `$$=\\frac{${sum}}{${denom}}$$`
+	}
+	html += `$$\\bar{X}=${(sum/denom).toFixed(3)}$$`
+	document.querySelector("#formula0").innerHTML = html;
+	MathJax.typeset();
+	
+}
+
+//work to calculate the variance and stdev
+function varCalcWork(xvalue, xmean, xmean1){
+	let html = "$$s^{2}=\\frac{1}{n-1} \\sum_{i=1}^{n}(X_{i}-\\bar{X})^{2}$$";
+	let num = ""
+	let sum = 0
+	for(let i =0; i < xvalue.length; i++){
+		num += `(${xvalue[i]}-${xmean1}^{2})`;
+		if( i !== xvalue.length -1){
+			num += "+"
+			if( i === 2 && i <xvalue.length - 1){
+				num += "...+";
+				i = xvalue.length -2;
+			}
+		}
+		
+	}
+	for(let i=0; i < xvalue.length; i++){
+		sum += (xvalue[i] - xmean)**2;
+	}
+	let variance =  (sum/(xvalue.length -1));
+	let stdev = Math.sqrt(variance);
+	let denom = `${xvalue.length - 1}`;
+	html += `$$=\\frac{${num}}{${denom}}$$`;
+	html += `$$=\\frac{${sum}}{${denom}}$$`;
+	html += `$$s^{2}=${variance.toFixed(3)}$$`;
+	html += `<br>`;
+	html += `$$s = \\sqrt{s^{2}}$$`;
+	html += `$$ = \\sqrt{${variance.toFixed(3)}}$$`;
+	html += `$$ s = ${stdev.toFixed(3)} $$`;
+	document.querySelector("#formula1").innerHTML = html;
+	MathJax.typeset();
+	
+}
+
+//used to show and hide different components
+function showHide(formula){
+	var x = document.getElementById(formula);
+	if (x.style.display === "none") {
+		x.style.display = "block";
+	} else {
+		x.style.display = "none";
+	}
+}
+
+
+
+// create table to add input
+function generateTable(){
+	var size = parseInt(document.querySelector("#size").value)
+	var html = ''
+	if(size >= 1){
+		html+=` Please enter the sample values one by one.`;
+	}
+	for( let i = 1; i <= size; i++){
+		html +=
+	`<br>
+	X<sub>${i}</sub>: <input type="text" id="valuex${i}">
+	<br>`;
+	}
+	document.querySelector("#table").innerHTML = html
+	
+}		
+
+$(document).ready(function(){
+
+	$("#DivShow").click(function(){
+		$("#myDIV").css("display","block");
+		$("#DivShow").css("display","none");
+	});
+	$("#DivHide").click(function(){
+		$("#myDIV").css("display","none");
+		$("#DivShow").css("display","block");
+	});
+
+	$("#meanShow").click(function(){
+		$("#meanContent").css("display", "block");
+		$("#meanShow").css("display", "none");
+	});
+	$("#meanHide").click(function(){
+		$("#meanContent").css("display", "none");
+		$("#meanShow").css("display", "block");
+	});
+
+	$("#varShow").click(function(){
+		$("#varianceContent").css("display", "block");
+		$("#varShow").css("display", "none");
+	});
+	$("#varHide").click(function(){
+		$("#varianceContent").css("display", "none");
+		$("#varShow").css("display", "block");
+	});
+});
+
+</script>
+</html>
